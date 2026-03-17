@@ -1,0 +1,69 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: talaria-invest
+  datasource:
+    url: jdbc:mysql://localhost:3306/talaria_invest?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8
+    username: talaria
+    password: talaria1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.add.type.headers: false
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY:}
+      chat:
+        options:
+          model: gpt-4o
+  threads:
+    virtual:
+      enabled: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  tracing:
+    sampling:
+      probability: 1.0
+  otlp:
+    tracing:
+      endpoint: http://localhost:4318/v1/traces
+
+logging:
+  level:
+    io.github.snuggle.talaria: DEBUG
+
+talaria:
+  invest:
+    scheduler:
+      cron: "0 0 8 * * MON-FRI"
+    kis:
+      base-url: ${KIS_BASE_URL:https://openapi.koreainvestment.com:9443}
+      app-key: ${KIS_APP_KEY:}
+      app-secret: ${KIS_APP_SECRET:}
+    llm:
+      partial-failure-allowed: true  # LLM 장애 시 해당 종목 skip, 나머지 계속 처리
