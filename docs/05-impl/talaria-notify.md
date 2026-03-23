@@ -381,7 +381,7 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: "io.github.snuggle.talaria.common.event"
-        spring.json.value.default.type: "io.github.snuggle.talaria.common.event.StockAnalyzedEvent"
+        spring.json.value.default.type: "event.io.snuggle.talaria.common.StockAnalyzedEvent"
 ```
 
 ### Pitfall 3: `NotificationDispatch.id`가 null인 상태로 `updateDispatch()` 호출
